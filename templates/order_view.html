@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Order Details</h1>
+    
+    <!-- Order Information -->
+    <section class="details-section">
+        <h3>Order Information</h3>
+        <p><strong>Order ID:</strong> {{ order.id }}</p>
+        <p><strong>Service:</strong> {{ order.service.service_name }}</p>
+        <p><strong>Booking Time:</strong> {{ order.booking_time }}</p>
+        <p><strong>Status:</strong> {{ order.status }}</p>
+    </section>
+
+    <!-- Customer Information -->
+    <section class="details-section">
+        <h3>Customer Information</h3>
+        <p><strong>Name:</strong> {{ order.customer.name }}</p>
+        <p><strong>Email:</strong> {{ order.customer.email }}</p>
+        <p><strong>Phone:</strong> {{ order.customer.phone }}</p>
+        <p><strong>Address:</strong> {{ order.customer.address }}</p>
+        <p><strong>Pincode:</strong> {{ order.customer.pincode }}</p>
+    </section>
+
+    <!-- Service Professional Information -->
+    <section class="details-section">
+        <h3>Service Professional Information</h3>
+        <p><strong>Name:</strong> {{ order.service_professional.name }}</p>
+        <p><strong>Email:</strong> {{ order.service_professional.email }}</p>
+        <p><strong>Phone:</strong> {{ order.service_professional.phone }}</p>
+        <p><strong>Address:</strong> {{ order.service_professional.address }}</p>
+        <p><strong>Pincode:</strong> {{ order.service_professional.pincode }}</p>
+
+    </section>
+    <!-- Feedback Information -->
+    <section class="details-section">
+        <h3>Customer Feedback</h3>
+        <p><strong>Ratings:</strong> {{ order.ratings if order.ratings else 'Not Rated' }}</p>
+        <p><strong>Comments:</strong> {{ order.comments if order.comments else 'No Comments' }}</p>
+        
+        <p><strong>Flag Status:</strong> {{ 'Yes' if order.flag else 'No' }}</p>
+
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="actions">
+        {% if order.status == 'Pending' %}
+            
+            <form action="{{ url_for('cancel_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-warning">Cancel</button>
+            </form>
+            <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-danger">Delete</button>
+            </form>
+        {% elif order.status == 'In Progress' %}
+            <form action="{{ url_for('cancel_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-warning">Cancel</button>
+            </form>
+            <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-danger">Delete</button>
+            </form>
+        {% endif %}
+        
+        <!-- Delete button for admin use -->
+        <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+
+        <!-- Back to Order Management Button -->
+        <a href="{{ url_for('orders') }}" class="btn btn-secondary">Back to Order Management Page</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/order_view.css') }}">
+{% endblock %}

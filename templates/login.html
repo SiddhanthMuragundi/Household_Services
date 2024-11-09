@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+{% block title %}
+Login - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2 class="mb-4">Login</h2>
+
+    <!-- Flash messages (alerts in red)
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show custom-alert" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %} -->
+
+    <!-- User Selection Buttons with Images -->
+    <div class="user-selection">
+        <button class="user-type" data-user="admin" onclick="selectUser(this)">
+            <img src="{{ url_for('static', filename='images/admin.png') }}" alt="Admin Icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="user-title">Admin</span>
+        </button>
+        <button class="user-type" data-user="customer" onclick="selectUser(this)">
+            <img src="{{ url_for('static', filename='images/user.png') }}" alt="Customer Icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="user-title">Customer</span>
+        </button>
+        <button class="user-type" data-user="service_professional" onclick="selectUser(this)">
+            <img src="{{ url_for('static', filename='images/service_professional.png') }}" alt="Service Professional Icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="user-title">Service Professional</span>
+        </button>
+    </div>
+
+    <!-- Login Form -->
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="email">Email Id:</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email id" required aria-label="Email Id" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address.">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required aria-label="Password">
+        </div>
+        <input type="hidden" id="user-role" name="user_role" value="admin"> 
+        <button type="submit" class="btn btn-custom btn-block">Login</button>
+    </form>
+
+    <!-- Links for registration and forgot password -->
+    <div class="mt-3">
+        <a href="{{ url_for('register') }}" class="link">Register Now</a> <span style="color: black;">|</span> 
+        <a href="{{ url_for('forgot_password') }}" class="link">Forgot Password?</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

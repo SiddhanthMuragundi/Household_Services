@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+
+{% block title %}Customer Management{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Customer Management</h1>
+<!-- Search Form -->
+<form action="{{ url_for('customers') }}" method="GET" class="common-search-form mt-3 mb-4">
+    <input type="text" name="query" class="form-control" placeholder="Search by name, ID, phone, email, address, flag_count, or pincode" value="{{ request.args.get('query', '') }}">
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="{{ url_for('customers') }}" class="btn btn-secondary">Clear</a>
+</form>
+    <!-- Navigation Buttons -->
+    <nav>
+        <button onclick="showSection('activeCustomers', this)" class="nav-button active">Active</button>
+        <button onclick="showSection('blockedCustomers', this)" class="nav-button">Blocked</button>
+        <button onclick="showSection('suspiciousCustomers', this)" class="nav-button">Suspicious</button>
+    </nav>
+  
+    <!-- Active Customers Section -->
+    <div id="activeCustomers" class="section">
+        <h2>Active Customers</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Flag Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in active_customers %}
+                <tr>
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.address }}</td>
+                    <td>{{ customer.pincode }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.flag_count }}</td>
+                    <td>
+                        <a href="{{ url_for('customer_view', id=customer.id) }}" class="btn btn-info">View</a>
+                        <form action="{{ url_for('deactivate_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Deactivate</button>
+                        </form>
+                        <form action="{{ url_for('delete_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Blocked Customers Section -->
+    <div id="blockedCustomers" class="section" style="display:none;">
+        <h2>Blocked Customers</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Flag Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in blocked_customers %}
+                <tr>
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.address }}</td>
+                    <td>{{ customer.pincode }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.flag_count }}</td>
+                    <td>
+                        <a href="{{ url_for('customer_view', id=customer.id) }}" class="btn btn-info">View</a>
+                        <form action="{{ url_for('activate_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-success">Activate</button>
+                        </form>
+                        <form action="{{ url_for('delete_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Suspicious Customers Section -->
+    <div id="suspiciousCustomers" class="section" style="display:none;">
+        <h2>Suspicious Customers</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Flag Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in suspicious_customers %}
+                <tr>
+                    <td>{{ customer.id }}</td>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.address }}</td>
+                    <td>{{ customer.pincode }}</td>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.flag_count }}</td>
+                    <td>
+                        <a href="{{ url_for('customer_view', id=customer.id) }}" class="btn btn-info">View</a>
+                        <form action="{{ url_for('deactivate_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Deactivate</button>
+                        </form>
+                        <form action="{{ url_for('delete_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    function showSection(sectionId, button) {
+        const sections = document.querySelectorAll('.section');
+        sections.forEach(section => section.style.display = 'none');
+        document.getElementById(sectionId).style.display = 'block';
+        
+        const buttons = document.querySelectorAll('.nav-button');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        button.classList.add('active');
+    }
+</script>
+{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customers.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+{% endblock %}

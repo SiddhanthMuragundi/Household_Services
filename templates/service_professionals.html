@@ -1,0 +1,203 @@
+{% extends 'layout.html' %}
+
+{% block title %}Service Professionals{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Service Professionals Management</h1>
+    <form action="{{ url_for('service_professionals') }}" method="GET" class="common-search-form mt-3 mb-4">
+        <input type="text" name="query" class="form-control" placeholder="Search by name, ID, phone, email, address, flag_count, or pincode" value="{{ request.args.get('query', '') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('service_professionals') }}" class="btn btn-secondary">Clear</a>
+    </form>
+    <nav>
+        <button onclick="showSection('newRegistrations', this)" class="nav-button active">New Registrations</button>
+        <button onclick="showSection('blockedAccounts', this)" class="nav-button">Blocked Accounts</button>
+        <button onclick="showSection('activeAccounts', this)" class="nav-button">Active Accounts</button>
+        <button onclick="showSection('suspiciousAccounts', this)" class="nav-button">Suspicious Accounts</button>
+    </nav>
+    
+
+    <div id="newRegistrations" class="section">
+        <h2>New Registrations</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone No</th>
+                    <th>Email</th>
+                    <th>ID</th>
+                    <th>Govt ID</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prof in new_reg_profs %}
+                <tr>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.name }}</td>
+                    <td>{{ prof.phone }}</td>
+                    <td>{{ prof.email }}</td>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.govt_id }}</td>
+                    <td>{{ prof.address }}</td>
+                    <td>{{ prof.pincode }}</td>
+                    <td>
+                        <form action="{{ url_for('approve_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-success">Approve</button>
+                        </form>
+                        <form action="{{ url_for('delete_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Deny</button>
+                        </form>
+                        <a href="{{ url_for('service_professional_view', id=prof.id) }}" class="btn btn-info">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="blockedAccounts" class="section" style="display:none;">
+        <h2>Blocked Accounts</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone No</th>
+                    <th>Email</th>
+                    <th>ID</th>
+                    <th>Govt ID</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Flag Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prof in blocked_profs %}
+                <tr>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.name }}</td>
+                    <td>{{ prof.phone }}</td>
+                    <td>{{ prof.email }}</td>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.govt_id }}</td>
+                    <td>{{ prof.address }}</td>
+                    <td>{{ prof.pincode }}</td>
+                    <td>{{ prof.flag_count }}</td>
+                    <td>
+                        <form action="{{ url_for('approve_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-success">Activate</button>
+                        </form>
+                        <form action="{{ url_for('delete_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                        <a href="{{ url_for('service_professional_view', id=prof.id) }}" class="btn btn-info">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="activeAccounts" class="section" style="display:none;">
+        <h2>Active Accounts</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone No</th>
+                    <th>Email</th>
+                    <th>ID</th>
+                    <th>Govt ID</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Flag Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prof in active_profs %}
+                <tr>
+                    <td>{{ prof.id}}</td>
+                    <td>{{ prof.name }}</td>
+                    <td>{{ prof.phone }}</td>
+                    <td>{{ prof.email }}</td>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.govt_id }}</td>
+                    <td>{{ prof.address }}</td>
+                    <td>{{ prof.pincode }}</td>
+                    <td>{{ prof.flag_count }}</td>
+                    <td>
+                        <form action="{{ url_for('deactivate_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Deactivate</button>
+                        </form>
+                        <form action="{{ url_for('delete_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                        <a href="{{ url_for('service_professional_view', id=prof.id) }}" class="btn btn-info">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div id="suspiciousAccounts" class="section" style="display:none;">
+        <h2>Suspicious Accounts</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Phone No</th>
+                    <th>Email</th>
+                    <th>ID</th>
+                    <th>Govt ID</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prof in suspicious_profs %}
+                <tr>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.name }}</td>
+                    <td>{{ prof.phone }}</td>
+                    <td>{{ prof.email }}</td>
+                    <td>{{ prof.id }}</td>
+                    <td>{{ prof.govt_id }}</td>
+                    <td>{{ prof.address }}</td>
+                    <td>{{ prof.pincode }}</td>
+                    <td>
+                        <form action="{{ url_for('deactivate_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Deactivate</button>
+                        </form>
+                        <form action="{{ url_for('delete_professional', id=prof.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                        <a href="{{ url_for('service_professional_view', id=prof.id) }}" class="btn btn-info">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{%endblock%}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/service_professionals.js') }}"></script>
+{% endblock %}
+
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/service_professionals.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+{% endblock %}

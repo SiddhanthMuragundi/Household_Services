@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+My Orders - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+    <header>
+        <h2>My Orders</h2>
+        <p>Manage your active and past orders.</p>
+        <p>
+            <strong>Pending Orders:</strong> {{ pending_orders|length }} &nbsp; | &nbsp;
+            <strong>Completed Orders:</strong> {{ completed_orders|length }}
+        </p>
+    </header>
+   
+    <!-- Completed Orders Section -->
+    <section id="completed" class="tab-content">
+        <h3>Completed Orders</h3>
+        {% if completed_orders %}
+            {% for order in completed_orders %}
+                {% if order.status == 'Completed' %}
+                    <div class="order-item completed">
+                        <h4>{{ order.service_details.service_name }}</h4>
+                        <p><strong>Status:</strong> {{ order.status }}</p>
+                        <p><strong>Service Professional:</strong> {{ order.service_professional_details.name }}</p>
+                        <p><strong>Phone Number:</strong> {{ order.service_professional_details.phone }}</p>
+                        <p><strong>Price:</strong> Rs {{ order.service_details.price }}</p>
+
+                        <!-- Display Last Feedback -->
+                        {% set latest_feedback = order.feedback_entries[-1] if order.feedback_entries else None %}
+                        <h5>Last Feedback:</h5>
+                        {% if latest_feedback %}
+                            <p><strong>Rating:</strong> {{ latest_feedback.rating }} / 5</p>
+                            <p><strong>Comments:</strong> {{ latest_feedback.comments }}</p>
+                            <p><strong>Flagged:</strong> {{ 'Yes' if latest_feedback.flag else 'No' }}</p>
+                        {% else %}
+                            <p>No feedback provided yet.</p>
+                        {% endif %}
+
+                        <!-- Edit Feedback Form -->
+                        <form action="{{ url_for('edit_feedback', order_id=order.id) }}" method="POST" class="feedback-form">
+                            <label>Edit Rating:</label>
+                            <div class="star-rating">
+                                {% for i in range(5, 0, -1) %}
+                                    <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}-{{ order.id }}" 
+                                           {% if latest_feedback and latest_feedback.rating == i %}checked{% endif %} />
+                                    <label for="star{{ i }}-{{ order.id }}" class="star">&#9733;</label>
+                                {% endfor %}
+                            </div>
+                            <label>Edit Comments:</label>
+                            <textarea name="comments" placeholder="Update your feedback...">{{ latest_feedback.comments if latest_feedback else '' }}</textarea>
+                            <label>Flag this order:</label>
+                            <input type="checkbox" name="flag" {% if latest_feedback and latest_feedback.flag %}checked{% endif %}>
+                            <button type="submit" class="btn btn-submit-feedback">Save Changes</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <p>No completed orders found.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

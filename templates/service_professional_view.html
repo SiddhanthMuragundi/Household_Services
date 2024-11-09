@@ -1,0 +1,104 @@
+{% extends 'layout.html' %}
+
+{% block title %}Service Professional Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Service Professional Details</h1>
+    
+    <!-- Personal and Contact Information -->
+    <section class="details-section">
+        <h3>Personal Information</h3>
+        <h2>{{ prof.name }}</h2>
+        <p><strong>ID:</strong> {{ prof.id }}</p>
+        <p><strong>Email:</strong> {{ prof.email }}</p>
+        <p><strong>Phone:</strong> {{ prof.phone }}</p>
+    </section>
+
+    <!-- Location Information -->
+    <section class="details-section">
+        <h3>Location Information</h3>
+        <p><strong>Address:</strong> {{ prof.address }}</p>
+        <p><strong>Country:</strong> {{ prof.country }}</p>
+        <p><strong>State:</strong> {{ prof.state }}</p>
+        <p><strong>District:</strong> {{ prof.district }}</p>
+        <p><strong>Pincode:</strong> {{ prof.pincode }}</p>
+    </section>
+
+    <!-- Service Information -->
+    <section class="details-section">
+        <h3>Service Information</h3>
+        <p><strong>Service Type:</strong> {{ prof.service_type }}</p>
+        <p><strong>Experience:</strong> {{ prof.experience }}</p>
+        <p><strong>Description:</strong> {{ prof.description }}</p>
+    </section>
+
+    <!-- Verification and Activity Status -->
+    <section class="details-section">
+        <h3>Verification & Activity</h3>
+        <p><strong>Government ID:</strong> {{ prof.govt_id }}</p>
+        <p><strong>Approval Status:</strong> {{ 'Approved' if prof.approve_status else 'Pending' }}</p>
+        <p><strong>Activation Status:</strong> {{ 'Active' if prof.active_status else 'Inactive' }}</p>
+    </section>
+
+
+    {% if prof.approve_status %}
+    <!-- Performance Indicators -->
+    <section class="details-section">
+        <h3>Performance Indicators</h3>
+        <p><strong>Total Flags:</strong> {{ total_flags }}</p>
+        <p><strong>Flag Count (since last activation):</strong> {{ prof.flag_count }}</p>
+        
+        
+        <p><strong>Average Rating:</strong> {{ avg_rating }}</p>
+        <h4>Latest Comments:</h4>
+        {% for comment, rating in top_comments %}
+        <div class="comment">
+            <p>{{ comment }} - <strong>Rating:</strong> {{ rating }}</p>
+        </div>
+        {% endfor %}
+        
+    </section>
+    {% endif %}
+    <!-- Action Buttons -->
+    <div class="actions">
+        {% if not prof.approve_status %}
+        <form action="{{ url_for('download_govt_id', id=prof.id) }}" method="GET">
+            <button class="btn btn-warning">Download Government ID Proof</button>
+        </form>
+        <form action="{{ url_for('approve_professional', id=prof.id) }}" method="POST">
+            <button class="btn btn-success">Approve</button>
+        </form>
+        <form action="{{ url_for('delete_professional', id=prof.id) }}" method="POST" style="display:inline;">
+            <button class="btn btn-danger">Deny</button>
+        </form>
+       
+
+        {% endif %}
+        
+        {% if prof.active_status %}
+        <form action="{{ url_for('deactivate_professional', id=prof.id) }}" method="POST">
+            <button class="btn btn-warning">Deactivate</button>
+        </form>
+        {% endif %}
+        
+        {% if prof.approve_status and not prof.active_status %}
+        <form action="{{ url_for('activate_professional', id=prof.id) }}" method="POST">
+            <button class="btn btn-success">Activate</button>
+        </form>
+        {% endif %}
+        {% if  prof.approve_status %}
+        <form action="{{ url_for('delete_professional', id=prof.id) }}" method="POST">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+        {% endif %}
+        <!-- Back to Service Management Button -->
+        <a href="{{ url_for('service_professionals') }}" class="btn btn-secondary">Back to Service Management Page</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/service_professionals_view.css') }}">
+{% endblock %}

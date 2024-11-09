@@ -1,0 +1,15 @@
+
+{% extends 'layout.html' %}
+
+{% block title %}
+Home - Expert Household Services
+{% endblock %}
+
+{% block content %}
+{%include 'home_content.html' %}
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+

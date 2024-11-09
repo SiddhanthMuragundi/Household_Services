@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Services - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="services-container">
+    <header>
+        <h2>Available Services</h2>
+    </header>
+    <form action="{{ url_for('services') }}" method="GET" class="common-search-form mt-3 mb-4">
+        <input type="text" name="query" class="form-control" placeholder="Search by name or status (Active/Inactive)" value="{{ request.args.get('query', '') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('services') }}" class="btn btn-secondary">Clear</a>
+    </form>
+    <section class="services-details">
+        <form class="services-form">
+            {% if services %}
+                <div class="services-list">
+                    {% for service in services %}
+                        <div class="service-item">
+                            <h3>{{ service.service_name }}</h3>
+                            <div class="form-row">
+                                <label><strong>Details:</strong></label>
+                                <span>{{ service.description }}</span>
+                            </div>
+                            <div class="form-row spacing">
+                                <label><strong>Price (in Rs):</strong></label>
+                                <span>{{ service.price }}</span>
+                            </div>
+                            <div class="form-row spacing">
+                                <label><strong>Estimated Time (in hrs):</strong></label>
+                                <span>{{ service.time_required }}</span>
+                            </div>
+                            
+                        </div>
+                        <hr>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No services available at the moment.</p>
+            {% endif %}
+        </form>
+    </section>
+
+    <div class="note">
+        <p><strong>Note:</strong> All services may not be available at all locations. Please check while booking.</p>
+    </div>
+
+    <div class="actions">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}

@@ -1,0 +1,70 @@
+<div class="navbar">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Expert Household Services</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          {% if user and role == 'admin' %}
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('service_management') }}">Service Management</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('service_professionals') }}">Service Professionals</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('customers') }}">Customers</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('orders') }}">Orders</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('about_us') }}">About Us</a></li>
+          {% elif user and role == 'customer' %}
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('available_services') }}">Available Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('view_cart') }}">Cart</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('customer_summary') }}">Summary</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('about_us') }}">About Us</a></li>
+          {% elif user and role == 'service_professional' %}
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('requests') }}">Requests</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('service_professional_summary') }}">Summary</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('about_us') }}">About Us</a></li>
+          {% else %}
+          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('services') }}">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('about_us') }}">About Us</a></li>
+          {% endif %}
+        </ul>
+
+      
+
+        {% if user %}
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-user-circle fa-2x"></i> Logged in as {{ role|capitalize }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              {% if role == 'admin' %}
+              <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+              {% elif role == 'customer' %}
+              <li><a class="dropdown-item" href="{{ url_for('view_orders') }}">View Orders</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+              {% elif role == 'service_professional' %}
+              <li><a class="dropdown-item" href="{{ url_for('service_history') }}">Service History</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+              {% endif %}
+            </ul>
+          </li>
+        </ul>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+</div>
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth-navbar.css') }}">
+{% endblock %}

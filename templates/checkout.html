@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Checkout - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <header>
+        <h2>Checkout</h2>
+        <p>Review your selected services and complete your booking.</p>
+    </header>
+
+    {% if cart_services %}
+        <section class="cart-review">
+            <h3>Your Cart</h3>
+            <ul class="cart-items">
+                {% for service in cart_services %}
+                    <li class="cart-item">
+                        <h4>{{ service.service_name }}</h4>
+                        <p>{{ service.description }}</p>
+                        <p><strong>Price:</strong> Rs {{ service.price }}</p>
+                        <p><strong>Time Required:</strong> {{ service.time_required }} hrs</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <section class="order-summary">
+            <h3>Order Summary</h3>
+            <p><strong>Total Price:</strong> Rs {{ total_price }}</p>
+            <p><strong>Estimated Total Time:</strong> {{ total_time }} hrs</p>
+        </section>
+
+        <section class="confirm-order">
+            <form id="checkoutForm" action="{{ url_for('confirm_order') }}" method="POST">
+                <button type="submit" class="btn btn-confirm">Confirm Booking</button>
+                <a href="{{ url_for('view_cart') }}" class="btn btn-secondary">Back to Cart</a>
+            </form>
+        </section>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.getElementById('checkoutForm').onsubmit = function(event) {
+        alert('Booking confirmed! Redirecting to Orders page...');
+    };
+    
+</script>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/checkout.css') }}">
+{% endblock %}

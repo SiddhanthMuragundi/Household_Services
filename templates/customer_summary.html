@@ -1,0 +1,134 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Customer Summary - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Your Booking Summary</h1>
+<h2>Services Booked:</h2>
+    <section class="services-booked details-container">
+        
+        <ul class="service-list">
+            {% for service in data.service_names %}
+                <li class="service-item">{{ service }}</li>
+            {% else %}
+                <li class="service-item no-services-msg">No services booked.</li>
+            {% endfor %}
+        </ul>
+    </section>
+<h2>Total Cost:</h2>
+    <section class="total-cost-section details-container">
+        
+        <p class="total-cost">₹{{ '%.2f' | format(data.total_cost) }}</p>
+    </section>
+<h2>Your Booking Details:</h2>
+    <section class="booking-details details-container">
+        
+        <table class="booking-table">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Service</th>
+                    <th>Booking Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in data.bookings %}
+                    <tr>
+                        <td>{{ booking.id }}</td>
+                        {% set service = Service.query.get(booking.service_id) %}
+                        <td>{{ service.service_name if service else 'Unknown Service' }}</td>
+                        <td>{{ booking.booking_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="no-services-msg">No bookings found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+<h2>Cost Analysis:</h2>
+    <section class="charts charts-container">
+        
+        <div class="charts-container">
+            <div class="chart-item">
+                <h3>Monthly Cost</h3>
+                <canvas id="monthlyChart"></canvas>
+            </div>
+
+            <div class="chart-item">
+                <h3>Yearly Cost</h3>
+                <canvas id="yearlyChart"></canvas>
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer_summary.css') }}">
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Monthly Cost Chart
+    const monthlyCostData = {{ data.monthly_cost | tojson }};
+    const monthlyLabels = Object.keys(monthlyCostData);
+    const monthlyValues = Object.values(monthlyCostData);
+
+    const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+    const monthlyChart = new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: 'Monthly Cost',
+                data: monthlyValues,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Yearly Cost Chart
+    const yearlyCostData = {{ data.yearly_cost | tojson }};
+    const yearlyLabels = Object.keys(yearlyCostData);
+    const yearlyValues = Object.values(yearlyCostData);
+
+    const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
+    const yearlyChart = new Chart(yearlyCtx, {
+        type: 'line',
+        data: {
+            labels: yearlyLabels,
+            datasets: [{
+                label: 'Yearly Cost',
+                data: yearlyValues,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

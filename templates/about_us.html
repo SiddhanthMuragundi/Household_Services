@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+About Us - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <header>
+        <h1>About Expert Household Services</h1>
+    </header>
+    <section class="about-details">
+        <p>
+            Welcome to Expert Household Services, where your comfort and satisfaction are at the heart of everything we do. Founded with a passion for providing reliable and high-quality home assistance, our dedicated team is committed to transforming your living space into a sanctuary of peace and productivity.
+        </p>
+        <p>
+            With years of industry experience, we recognize that every home is unique, and so are its needs. Our diverse range of services is tailored to meet your specific requirements—whether it’s cleaning, maintenance, or specialized tasks. We take pride in building lasting relationships with our clients by delivering excellence and ensuring that every job is completed to perfection.
+        </p>
+        <p>
+            At Expert Household Services, we uphold values of integrity, professionalism, and transparency. Our team members are fully trained and vetted, giving you peace of mind as we work in your home. We pay meticulous attention to detail and remain steadfast in our commitment to customer satisfaction.
+        </p>
+        <h2>Our Values</h2>
+        <ul>
+            <li><strong>Customer-Centric:</strong> Your needs drive our services.</li>
+            <li><strong>Quality Assurance:</strong> We strive to exceed expectations.</li>
+            <li><strong>Integrity:</strong> We deliver honest and transparent services.</li>
+            <li><strong>Reliability:</strong> You can count on us, day or night.</li>
+        </ul>
+        <p>
+            Join us on this journey to elevate your home experience. At Expert Household Services, we’re not just providing services; we’re creating a partnership that enhances your daily life.
+        </p>
+    </section>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about_us.css') }}">
+{% endblock %}

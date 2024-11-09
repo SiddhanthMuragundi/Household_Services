@@ -1,0 +1,163 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+My Orders - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+    <header>
+        <h2>My Orders</h2>
+        <p>Manage your active and past orders.</p>
+        <p>
+            <strong>Pending Orders:</strong> {{ pending_orders|length }} &nbsp; | &nbsp;
+            <strong>Completed Orders:</strong> {{ completed_orders|length }}
+        </p>
+        <form action="{{ url_for('view_orders') }}" method="GET" class="common-search-form mt-3 mb-4">
+    <input type="text" name="query" class="form-control" placeholder="Search by Booking ID, Status, Service Name, or Service Professional Name" value="{{ request.args.get('query', '') }}">
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a href="{{ url_for('view_orders') }}" class="btn btn-secondary">Clear</a>
+</form>
+
+    </form>
+    </header>
+ 
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-button active" onclick="showTab('pending')">Pending Orders</button>
+        <button class="tab-button" onclick="showTab('completed')">Completed Orders</button>
+        <button class="tab-button" onclick="showTab('cancelled')">Cancelled Orders</button>
+    </div>
+
+    <!-- Pending Orders Section -->
+    <section id="pending" class="tab-content active">
+        <h3>Pending Orders</h3>
+        {% if pending_orders %}
+            {% for order in pending_orders %}
+                <div class="order-item">
+                    <h4>{{ order.service_details.service_name }}</h4>
+                    <p><strong>Booking ID:</strong> {{ order.id }}</p>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+                    <p><strong>Price:</strong> Rs {{ order.service_details.price }}</p>
+                    {% if order.status == 'In Progress' %}
+                        <p><strong>Service Professional:</strong> {{ order.service_professional_details.name }}</p>
+                        <p><strong>Phone Number:</strong> {{ order.service_professional_details.phone }}</p>
+                        <a href="{{ url_for('complete_order', order_id=order.id) }}" class="btn btn-complete">Mark as Complete</a>
+                    {% endif %}
+
+                    
+                    <a href="{{ url_for('cancel_order', order_id=order.id) }}" class="btn btn-cancel">Cancel</a>
+                    <!-- {% if order.status == 'Pending' %} -->
+                       
+                    <!-- {% endif %} -->
+
+                    <!-- Flagging Section -->
+                    <label style="cursor: pointer; display: flex; align-items: center;" onclick="toggleFlag(event)" data-order-id="{{ order.id }}">
+                        <i id="flag-icon-{{ order.id }}" class="fas fa-flag" style="color: {{ 'red' if order.flag else 'gray' }};"></i>
+                        <span style="margin-left: 5px;">Flag this order</span>
+                        <input type="checkbox" name="flag" id="flag-{{ order.id }}" {% if order.flag %}checked{% endif %} style="display: none;">
+                    </label>
+                    
+
+                    
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No pending orders found.</p>
+        {% endif %}
+    </section>
+
+
+
+
+    <!-- Completed Orders Section -->
+    <section id="completed" class="tab-content">
+        <h3>Completed Orders</h3>
+        {% if completed_orders %}
+            {% for order in completed_orders %}
+                <div class="order-item completed">
+                    <h4>{{ order.service_details.service_name }}</h4>
+                    <p><strong>Booking ID:</strong> {{ order.id }}</p>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+                    <p><strong>Service Professional:</strong> {{ order.service_professional_details.name }}</p>
+                    <p><strong>Phone Number:</strong> {{ order.service_professional_details.phone }}</p>
+                    <p><strong>Price:</strong> Rs {{ order.service_details.price }}</p>
+
+                    <!-- Display Existing Feedback -->
+                    <h5>Your Feedback:</h5>
+                    <p><strong>Rating:</strong> {{ order.rating }} / 5</p>
+                    <p><strong>Comments:</strong> {{ order.comments }}</p>
+
+                    <!-- Flagging Section -->
+                    <label style="cursor: pointer; display: flex; align-items: center;" onclick="toggleFlag(event)" data-order-id="{{ order.id }}">
+                        <i id="flag-icon-{{ order.id }}" class="fas fa-flag" style="color: {{ 'red' if order.flag else 'gray' }};"></i>
+                        <span style="margin-left: 5px;">Flag this order</span>
+                        <input type="checkbox" name="flag" id="flag-{{ order.id }}" {% if order.flag %}checked{% endif %} style="display: none;">
+                    </label>
+                    
+
+                    <!-- Edit Feedback Form -->
+                    <form action="{{ url_for('view_orders') }}" method="POST" class="feedback-form">
+                        <input type="hidden" name="booking_id" value="{{ order.id }}">
+                        <label>Edit Rating:</label>
+                        <div class="star-rating">
+                            {% for i in range(5, 0, -1) %}
+                                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}-{{ order.id }}"
+                                       {% if order.rating == i %}checked{% endif %} />
+                                <label for="star{{ i }}-{{ order.id }}" class="star">&#9733;</label>
+                            {% endfor %}
+                        </div>
+                        <label>Edit Comments:</label>
+                        <textarea name="comments" placeholder="Update your feedback...">{{ order.comments }}</textarea>
+                        <button type="submit" class="btn btn-submit-feedback">Save Changes</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No completed orders found.</p>
+        {% endif %}
+    </section>
+
+    <!-- Cancelled Order Section -->
+    <section id="cancelled" class="tab-content">
+        <h3>Cancelled Orders</h3>
+        {% if cancelled_orders %}
+            {% for order in cancelled_orders %}
+                <div class="order-item">
+                    <h4>{{ order.service_details.service_name }}</h4>
+                    <p><strong>Booking ID:</strong> {{ order.id }}</p>
+                    <p><strong>Status:</strong> {{ order.status }}</p>
+
+
+                    <!-- Flagging Section -->
+                    <label style="cursor: pointer; display: flex; align-items: center;" onclick="toggleFlag(event)" data-order-id="{{ order.id }}">
+                        <i id="flag-icon-{{ order.id }}" class="fas fa-flag" style="color: {{ 'red' if order.flag else 'gray' }};"></i>
+                        <span style="margin-left: 5px;">Flag this order</span>
+                        <input type="checkbox" name="flag" id="flag-{{ order.id }}" {% if order.flag %}checked{% endif %} style="display: none;">
+                    </label>
+                    
+
+                    
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No cancelled orders found.</p>
+        {% endif %}
+    </section>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/view_orders.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+
+
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='js/view_orders.js') }}"></script>
+{% endblock %}
+

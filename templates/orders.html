@@ -1,0 +1,192 @@
+{% extends 'layout.html' %}
+
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Order Management</h1>
+    <!-- Search Form -->
+    <form action="{{ url_for('orders') }}" method="GET" class="common-search-form mt-3 mb-4">
+        <input type="text" name="query" class="form-control" placeholder="Search by Name, ID, Time" value="{{ request.args.get('query', '') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('orders') }}" class="btn btn-secondary">Clear</a>
+    </form>
+    <!-- Navigation buttons for order statuses -->
+    <nav>
+        <button onclick="showSection('pendingOrders', this)" class="nav-button active">Pending Orders</button>
+        <button onclick="showSection('inprogressOrders', this)" class="nav-button">In Progress Orders</button>
+        <button onclick="showSection('completedOrders', this)" class="nav-button">Completed Orders</button>
+        <button onclick="showSection('cancelledOrders', this)" class="nav-button">Cancelled Orders</button>
+    </nav>
+
+    <!-- Pending Orders Section -->
+    <div id="pendingOrders" class="section">
+        <h2>Pending Orders</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer (ID)</th>
+                    <th>Service Professional (ID)</th>
+                    <th>Service</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Booking Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in pending_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.customer.name }} (ID: {{ order.customer_id}})</td>
+                    <td>{{ order.service_professional.name }} (ID: {{ order.service_professional_id}})</td>
+                    <td>{{ order.service.service_name }}</td>
+                    <td>{{ order.customer.address }}</td>
+                    <td>{{ order.customer.pincode }}</td>
+                    <td>{{ order.booking_time }}</td>
+                    <td>
+                        <a href="{{ url_for('order_view', id=order.id) }}" class="btn btn-info">View</a>
+                        <form action="{{ url_for('cancel_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Cancel</button>
+                        </form>
+                        <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- In Progress Orders Section -->
+    <div id="inprogressOrders" class="section" style="display:none;">
+        <h2>In Progress Orders</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer (ID)</th>
+                    <th>Service Professional (ID)</th>
+                    <th>Service</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Booking Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in inprogress_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.customer.name }} (ID: {{ order.customer_id}})</td>
+                    <td>{{ order.service_professional.name }} (ID: {{ order.service_professional_id}})</td>
+                    <td>{{ order.service.service_name }}</td>
+                    <td>{{ order.customer.address }}</td>
+                    <td>{{ order.customer.pincode }}</td>
+                    <td>{{ order.booking_time }}</td>
+                    <td>
+                        <a href="{{ url_for('order_view', id=order.id) }}" class="btn btn-info">View</a>
+                        <form action="{{ url_for('cancel_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Cancel</button>
+                        </form>
+                        <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Completed Orders Section -->
+    <div id="completedOrders" class="section" style="display:none;">
+        <h2>Completed Orders</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer (ID)</th>
+                    <th>Service Professional (ID)</th>
+                    <th>Service</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Booking Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in completed_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.customer.name }} (ID: {{ order.customer_id}})</td>
+                    <td>{{ order.service_professional.name }} (ID: {{ order.service_professional_id}})</td>
+                    <td>{{ order.service.service_name }}</td>
+                    <td>{{ order.customer.address }}</td>
+                    <td>{{ order.customer.pincode }}</td>
+                    <td>{{ order.booking_time }}</td>
+                    <td>
+                        <a href="{{ url_for('order_view', id=order.id) }}" class="btn btn-info">View</a>
+                        
+                        <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cancelled Orders Section -->
+    <div id="cancelledOrders" class="section" style="display:none;">
+        <h2>Cancelled Orders</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer (ID)</th>
+                    <th>Service Professional (ID)</th>
+                    <th>Service</th>
+                    <th>Address</th>
+                    <th>Pincode</th>
+                    <th>Booking Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in cancelled_orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.customer.name }} (ID: {{ order.customer_id}})</td>
+                    <td>{{ order.service_professional.name }} (ID: {{ order.service_professional_id}})</td>
+                    <td>{{ order.service.service_name }}</td>
+                    <td>{{ order.customer.address }}</td>
+                    <td>{{ order.customer.pincode }}</td>
+                    <td>{{ order.booking_time }}</td>
+                    <td>
+                        <a href="{{ url_for('order_view', id=order.id) }}" class="btn btn-info">View</a>
+                        
+                        <form action="{{ url_for('delete_order_admin', id=order.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/orders.js') }}"></script>
+{% endblock %}
+
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/orders.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+{% endblock %}

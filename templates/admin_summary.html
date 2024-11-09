@@ -1,0 +1,168 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Admin Summary - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Admin Summary</h1>
+
+    <!-- Revenue Metrics -->
+    <section class="revenue-metrics details-container">
+        <h2>Revenue Metrics</h2>
+        <p>Total Revenue: ₹{{ total_revenue }}</p>
+        <p>Total Yearly Revenue: ₹{{ total_yearly_revenue }}</p>
+    </section>
+
+    <!-- Revenue by Service -->
+    <section class="revenue-by-service details-container">
+        <h2>Revenue by Service</h2>
+        <ul class="service-list">
+            {% for service_name, revenue in service_revenue %}
+                <li class="service-item">{{ loop.index }}. {{ service_name }} (ID: {{ service_revenue.id }}): ₹{{ revenue }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- New Joinees -->
+    <section class="new-joinees details-container">
+        <h2>New Joinees (Last 30 Days)</h2>
+        <ul class="joinee-list">
+            {% for professional in new_joinees %}
+                <li>{{ loop.index }}. {{ professional.name }} (ID: {{ professional.id }}) - Joined on {{ professional.date_created.strftime('%Y-%m-%d') }}</li>
+            {% else %}
+                <li class="no-services-msg">No new joinees in the last 30 days.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- New Customers -->
+    <section class="new-customers details-container">
+        <h2>New Customers (Last 30 Days)</h2>
+        <ul class="customer-list">
+            {% for customer in new_customers %}
+                <li>{{ loop.index }}. {{ customer.name }} (ID: {{ customer.id }}) - Added on {{ customer.date_created.strftime('%Y-%m-%d') }}</li>
+            {% else %}
+                <li class="no-services-msg">No new customers added in the last 30 days.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- New Services -->
+    <section class="new-services details-container">
+        <h2>New Services (Last 30 Days)</h2>
+        <ul class="service-list">
+            {% for service in new_services %}
+                <li>{{ loop.index }}. {{ service.service_name }} (ID: {{ service.id }}) - Added on {{ service.date_created.strftime('%Y-%m-%d') }}</li>
+            {% else %}
+                <li class="no-services-msg">No new services added in the last 30 days.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Chart.js Revenue Charts -->
+    <section class="charts-container">
+        <h2>Revenue Analysis</h2>
+        <div class="chart-item">
+            <h3>Yearly Revenue Chart (Total for the Current Year)</h3>
+            <canvas id="yearlyRevenueChart"></canvas>
+        </div>
+        <div class="chart-item">
+            <h3>Monthly Revenue Chart (For the Current Year)</h3>
+            <canvas id="monthlyRevenueChart"></canvas>
+        </div>
+        <div class="chart-item">
+            <h3>Revenue by Service (For the Current Year)</h3>
+            <canvas id="serviceRevenuePieChart"  style="max-width: 800px; margin: 0 auto;"></canvas>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_summary.css') }}">
+{% endblock %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Data for Revenue by Service Chart
+    const serviceNames = {{ service_revenue | map(attribute=0) | list | tojson }};
+    const serviceRevenues = {{ service_revenue | map(attribute=1) | list | tojson }};
+
+    // Yearly Revenue Chart
+    new Chart(document.getElementById('yearlyRevenueChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Total Yearly Revenue'],
+            datasets: [{
+                label: 'Yearly Revenue',
+                data: [{{ total_yearly_revenue }}],
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                title: { display: true, text: 'Total Yearly Revenue' }
+            }
+        }
+    });
+
+    // Monthly Revenue Chart
+    new Chart(document.getElementById('monthlyRevenueChart'), {
+        type: 'bar',
+        data: {
+            labels: Array.from({ length: 12 }, (_, i) => new Date(0, i + 1).toLocaleString('default', { month: 'long' })),
+            datasets: [{
+                label: 'Monthly Revenue',
+                data: {{ monthly_revenue | tojson }},
+                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                title: { display: true, text: 'Monthly Revenue for the Current Year' }
+            }
+        }
+    });
+
+    // Revenue by Service Pie Chart
+    new Chart(document.getElementById('serviceRevenuePieChart'), {
+        type: 'pie',
+        data: {
+            labels: serviceNames,
+            datasets: [{
+                label: 'Revenue by Service',
+                data: serviceRevenues,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(153, 102, 255, 0.6)',
+                    'rgba(255, 159, 64, 0.6)'
+                ],
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                title: { display: true, text: 'Revenue by Service' }
+            }
+        }
+    });
+</script>
+{% endblock %}

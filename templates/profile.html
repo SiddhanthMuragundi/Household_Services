@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+{% block title %}
+Profile - Expert Household Services
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+    <header>
+        <h2>{{ user.name|capitalize }}'s Profile</h2>
+    </header>
+
+    <section class="profile-details">
+        <form class="profile-form">
+            <!-- Display User Information in a Table-like Format -->
+            <div class="form-row">
+                <label for="user-id"><strong>ID:</strong></label>
+                <span id="user-id">{{ user.id }}</span>
+            </div>
+            <div class="form-row">
+                <label for="user-name"><strong>Name:</strong></label>
+                <span id="user-name">{{ user.name }}</span>
+            </div>
+            <div class="form-row">
+                <label for="user-email"><strong>Email:</strong></label>
+                <span id="user-email">{{ user.email }}</span>
+            </div>
+
+            {% if role == 'customer' or role == 'service_professional' %}
+                <div class="form-row">
+                    <label for="user-phone"><strong>Phone Number:</strong></label>
+                    <span id="user-phone">{{ user.phone }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-address"><strong>Address:</strong></label>
+                    <span id="user-address">{{ user.address }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-district"><strong>District:</strong></label>
+                    <span id="user-district">{{ user.district }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-state"><strong>State:</strong></label>
+                    <span id="user-state">{{ user.state }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-country"><strong>Country:</strong></label>
+                    <span id="user-country">{{ user.country }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-pincode"><strong>Pincode:</strong></label>
+                    <span id="user-pincode">{{ user.pincode }}</span>
+                </div>
+            {% endif %}
+
+            {% if role == 'service_professional' %}
+                <div class="form-row">
+                    <label for="user-govt-id"><strong>Government ID:</strong></label>
+                    <span id="user-govt-id">{{ user.govt_id }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-service-type"><strong>Type of Service:</strong></label>
+                    <span id="user-service-type">{{ user.service_type }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-experience"><strong>Experience (in years):</strong></label>
+                    <span id="user-experience">{{ user.experience }}</span>
+                </div>
+                <div class="form-row">
+                    <label for="user-description"><strong>Description:</strong></label>
+                    <span id="user-description">{{ user.description }}</span>
+                </div>
+            {% endif %}
+
+            <div class="form-row">
+                <label for="user-date-created"><strong>Registered on:</strong></label>
+                <span id="user-date-created">{{ user.date_created }}</span>
+            </div>
+        </form>
+    </section>
+
+    <div class="actions">
+        <a href="{{ url_for('edit_profile', role=role) }}" class="btn btn-primary">Edit Profile</a>
+        
+        <a href="{{ url_for('change_password') }}" class="btn btn-warning">Change Password</a>>
+        <form method="POST" action="{{ url_for('logout') }}">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{%endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}

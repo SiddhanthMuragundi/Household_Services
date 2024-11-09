@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Account Not Approved - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="status-page">
+    <h2>Your Account is Not Yet Approved</h2>
+    <p>We have received your registration request, but your account is currently pending approval. Our team is reviewing your information, and we will notify you once your account is approved.</p>
+    <p>If you have any questions, please contact our support team at <a href="mailto:support@householdservices.com">support@householdservices.com</a>.</p>
+    <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account_not_approved.css') }}">
+{% endblock %}

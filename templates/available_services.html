@@ -1,0 +1,90 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Available Services - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="services-container">
+    <header>
+        <h2>Available Services</h2>
+        <p>Explore services available in your area</p>
+       
+
+
+    </header>
+    <form action="{{ url_for('available_services') }}" method="GET" class="common-search-form mt-3 mb-4">
+        <input type="text" name="query" class="form-control" placeholder="Search by name or minimum rating (e.g., 4)" value="{{ request.args.get('query', '') }}">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('available_services') }}" class="btn btn-secondary">Clear</a>
+    </form>
+    <section class="services-details">
+        {% if services %}
+            <div class="services-list">
+                {% for entry in services %}
+                    <div class="service-item">
+                        <h3>{{ entry.service.service_name }}</h3>
+                        <div class="form-row">
+                            <label><strong>Details:</strong></label>
+                            <span>{{ entry.service.description }}</span>
+                        </div>
+                        <div class="form-row">
+                            <label><strong>Price (in Rs):</strong></label>
+                            <span>{{ entry.service.price }}</span>
+                        </div>
+                        <div class="form-row">
+                            <label><strong>Estimated Time (in hrs):</strong></label>
+                            <span>{{ entry.service.time_required }}</span>
+                        </div>
+                        <div class="form-row">
+                            <label><strong>Rating:</strong></label>
+                            <span>
+                                {{ entry.avg_rating if entry.avg_rating > 0 else 'No ratings yet' }}
+                            </span>
+                        </div>
+
+                        <!-- Display Top 2 Comments -->
+                        <div class="form-row">
+                            <label><strong>Recent Feedback:</strong></label>
+                            <div class="comments-section">
+                                {% if entry.top_comments %}
+                                    {% for comment, rating in entry.top_comments %}
+                                        <div class="comment">
+                                            <p>{{ comment }}</p>
+                                            
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>No customer feedback available yet.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="form-row actions">
+                            {% if entry.service.id in cart %}
+                                <a href="{{ url_for('remove_from_cart', service_id=entry.service.id) }}" class="btn btn-remove-from-cart">Remove from Cart</a>
+                            {% else %}
+                                <a href="{{ url_for('add_to_cart', service_id=entry.service.id) }}" class="btn btn-add-to-cart">Add to Cart</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if not loop.last %}<hr>{% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-services-msg">No services available in your area at the moment.</p>
+        {% endif %}
+    </section>
+
+    <div class="actions">
+        <a href="{{ url_for('view_cart') }}" class="btn btn-secondary">View Cart</a>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+
+{% endblock %}

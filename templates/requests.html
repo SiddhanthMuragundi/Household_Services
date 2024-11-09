@@ -1,0 +1,76 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Available Requests - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="requests-container">
+    <header class="requests-header">
+        <h2>Available Requests</h2>
+    </header>
+    
+    
+    <section class="requests-details">
+        {% if in_progress_order %}
+            <div class="notice">
+                <p><strong>You have an ongoing order:</strong></p>
+                <h3>{{ in_progress_order.service_name }}</h3>
+                <p>{{ in_progress_order.service_description }}</p>
+                <div class="request-info">
+                    <p><strong>Booking ID:</strong> {{ in_progress_order.order.id }}</p>
+                    <p><strong>Booking Time:</strong> {{ in_progress_order.order.booking_time }}</p>
+                    <p><strong>Status:</strong> {{ in_progress_order.order.status }}</p>
+                    <p><strong>Customer Name:</strong> {{ in_progress_order.customer_name }}</p>
+                        <p><strong>Customer Phone Number:</strong> {{ in_progress_order.customer_phone }}</p>
+                    <p><strong>Customer Address:</strong> {{ in_progress_order.customer_address }}</p>
+                    
+                </div>
+            </div>
+            <hr>
+        {% else %}
+        <form action="{{ url_for('requests') }}" method="GET" class="common-search-form mt-3 mb-4">
+            <input type="text" name="query" class="form-control" placeholder="Search by service professional name, ID, phone, email, address, flag_count, or pincode" value="{{ request.args.get('query', '') }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ url_for('requests') }}" class="btn btn-secondary">Clear</a>
+        </form>
+            <p class="notice">You currently have no ongoing orders. You may accept a new one below.</p>
+        
+
+        <div class="requests-list">
+            {% for item in available_orders %}
+                <div class="request-item">
+                    <h3>{{ item.service_name }}</h3>
+                    <p>{{ item.service_description }}</p>
+                    <div class="request-info">
+                        <p><strong>Booking ID:</strong> {{ item.order.id }}</p>
+                        <p><strong>Booking Time:</strong> {{ item.order.booking_time }}</p>
+                        <p><strong>Status:</strong> {{ item.order.status }}</p>
+                        
+                        <p><strong>Customer Address:</strong> {{ item.customer_address }}</p>
+                        
+                    </div>
+                    <div class="request-actions">
+                        <form action="{{ url_for('accept_order', order_id=item.order.id) }}" method="post">
+                            <button type="submit" class="btn btn-primary">Accept Order</button>
+                        </form>
+                    </div>
+                </div>
+                {% if not loop.last %}<hr class="item-divider">{% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+
+    <div class="actions">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+
+{% endblock %}

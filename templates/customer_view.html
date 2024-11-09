@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block title %}Customer Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Customer Details</h1>
+    
+    <!-- Personal and Contact Information -->
+    <section class="details-section">
+        <h3>Personal Information</h3>
+        <h2>{{ customer.name }}</h2>
+        <p><strong>ID:</strong> {{ customer.id }}</p>
+        <p><strong>Email:</strong> {{ customer.email }}</p>
+        <p><strong>Phone:</strong> {{ customer.phone }}</p>
+        <p><strong>Activation Status:</strong> {{ 'Active' if customer.active_status else 'Inactive' }}</p>
+        
+    </section>
+
+    <!-- Location Information -->
+    <section class="details-section">
+        <h3>Location Information</h3>
+        <p><strong>Address:</strong> {{ customer.address }}</p>
+        <p><strong>Country:</strong> {{ customer.country }}</p>
+        <p><strong>State:</strong> {{ customer.state }}</p>
+        <p><strong>District:</strong> {{ customer.district }}</p>
+        <p><strong>Pincode:</strong> {{ customer.pincode }}</p>
+    </section>
+    <section class="details-section">
+        <h3>Service Professional Feedbacks</h3>
+        <p><strong>Total Flags:</strong> {{ total_flags }}</p>
+        <p><strong>Flag Count (since last activation):</strong> {{ customer.flag_count }}</p>
+    </section>
+
+
+    <!-- Action Buttons -->
+    <div class="actions">
+    {% if not customer.active_status  %}
+        <form action="{{ url_for('activate_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-success">Activate</button>
+                        </form>
+                        {% endif%}
+
+{% if  customer.active_status  %}
+                        <form action="{{ url_for('deactivate_customer', id=customer.id) }}" method="POST" style="display:inline;">
+                            <button class="btn btn-warning">Deactivate</button>
+                        </form>
+    {%endif %}
+
+        <form action="{{ url_for('delete_customer', id=customer.id) }}" method="POST">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+        
+        <!-- Back to Customer Management Button -->
+        <a href="{{ url_for('customers') }}" class="btn btn-secondary">Back to Customer Management Page</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer_view.css') }}">
+{% endblock %}

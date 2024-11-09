@@ -1,0 +1,170 @@
+body {
+    background-color: #e9ecef;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+header, footer {
+    width: 100%;
+    padding: 20px;
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    position: fixed;
+    z-index: 1000;
+}
+
+header {
+    top: 0;
+}
+
+footer {
+    bottom: 0;
+}
+
+.details-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 16px;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-top: 80px;
+    margin-bottom: 60px;
+}
+
+.container h1, .container h2, .container h3, .container h4 {
+    color: #343a40;
+}
+
+h1 {
+    text-align: center;
+}
+
+.details-section h3, .details-section h4 {
+    color: #007bff;
+}
+
+.details-section {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.details-section p {
+    margin: 8px 0;
+    color: #333;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+strong {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.actions .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.actions .btn-success {
+    background-color: #28a745;
+}
+
+.actions .btn-warning {
+    background-color: #ffc107;
+    color: #343a40;
+}
+
+.actions .btn-danger {
+    background-color: #dc3545;
+}
+
+.actions .btn:hover {
+    filter: brightness(0.9);
+}
+
+.comment {
+    background-color: #ffffff;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.comment p {
+    margin: 0;
+    color: #555;
+}
+
+.alert-danger {
+    color: #ff0000;
+    background-color: #ffe5e5;
+    border: 1px solid #ff0000;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+label {
+    font-weight: bold;
+    color: #333;
+}
+
+.pincode-input {
+    width: 100%;
+    max-width: 200px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

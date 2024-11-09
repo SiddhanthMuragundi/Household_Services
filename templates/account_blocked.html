@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Account Blocked - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="status-page">
+    <h2>Your Account is Blocked</h2>
+    <p>Unfortunately, your account has been blocked. If you believe this is a mistake or need more information, please contact our support team for assistance.</p>
+    <p>You can reach us at <a href="mailto:support@householdservices.com">support@householdservices.com</a>.</p>
+    <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account_blocked.css') }}">
+{% endblock %}

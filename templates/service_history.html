@@ -1,0 +1,102 @@
+{% extends 'layout.html' %}
+{% block title %}Service History{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <header class="history-header">
+        <h2>Service History</h2>
+        <p><strong>Total Completed Services: </strong>{{ total_completed_count }}</p>
+        <p><strong>Total Cancelled Services: </strong>{{ total_cancelled_count }}</p>
+    </header>
+ <form action="{{ url_for('service_history') }}" method="GET" class="common-search-form mt-3 mb-4">
+            <input type="text" name="query" class="form-control" placeholder="Search by Service ID, Customer ID, Booking Time, or End Time" value="{{ request.args.get('query', '') }}">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ url_for('service_history') }}" class="btn btn-secondary">Clear</a>
+        </form>
+    <section class="in-progress">
+        <h3>Current In-Progress Services</h3>
+        {% if in_progress_bookings %}
+            <div class="service-card">
+                {% for booking in in_progress_bookings %}
+                    <div class="card">
+                        <h4>Service ID: {{ booking.id }}</h4>
+                        <p>Customer ID: {{ booking.customer_id }}</p>
+                        <p>Start Time: {{ booking.booking_time }}</p>
+                        <p>Status: {{ booking.status }}</p>
+                        <!-- Flagging Section -->
+                        <label style="cursor: pointer; display: flex; align-items: center;" onclick="toggleFlag(event)" data-booking-id="{{ booking.id }}">
+                            <i id="flag-icon-{{ booking.id }}" class="fas fa-flag" style="color: {{ 'red' if booking.flag_customer else 'gray' }};"></i>
+                            <span style="margin-left: 5px;">Flag this Request / Customer</span>
+                            <input type="checkbox" name="flag" id="flag-{{ booking.id }}" {% if booking.flag_customer %}checked{% endif %} style="display: none;">
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No in-progress services.</p>
+        {% endif %}
+    </section>
+
+    <section class="history">
+        <h3>Completed Service History</h3>
+        {% if history_bookings %}
+            <div class="service-list">
+                {% for booking in history_bookings %}
+                    <div class="service-card">
+                        <h4>Service ID: {{ booking.id }}</h4>
+                        <p>Customer ID: {{ booking.customer_id }}</p>
+                        <p>Booking Time: {{ booking.booking_time }}</p>
+                        <p>End Time: {{ booking.booking_end_time or "Not Available" }}</p>
+                        <p>Status: {{ booking.status }}</p>
+                        <!-- Flagging Section -->
+                        <label style="cursor: pointer; display: flex; align-items: center;" onclick="toggleFlag(event)" data-booking-id="{{ booking.id }}">
+                            <i id="flag-icon-{{ booking.id }}" class="fas fa-flag" style="color: {{ 'red' if booking.flag_customer else 'gray' }};"></i>
+                            <span style="margin-left: 5px;">Flag this Request / Customer</span>
+                            <input type="checkbox" name="flag" id="flag-{{ booking.id }}" {% if booking.flag_customer %}checked{% endif %} style="display: none;">
+                        </label>
+                    </div>
+                    {% if not loop.last %}<hr class="item-divider">{% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No completed services found.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+   function toggleFlag(event) {
+    // Access the checkbox within the clicked label element
+    const checkbox = event.currentTarget.querySelector('input[type="checkbox"]');
+    const bookingId = event.currentTarget.dataset.bookingId; // Get the booking ID from the data attribute
+
+    // Toggle the checked state of the checkbox
+    checkbox.checked = !checkbox.checked;
+
+    // Change the icon color based on the checked state of the checkbox
+    const flagIcon = event.currentTarget.querySelector('i');
+    flagIcon.style.color = checkbox.checked ? 'red' : 'gray';
+
+    // Send an AJAX POST request to update the flag status on the server
+    fetch(`/update_flag_service/${bookingId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ flag: checkbox.checked })
+    });
+}
+
+</script>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/services.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/search_bar.css') }}">
+
+    
+{% endblock %}

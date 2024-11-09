@@ -1,0 +1,118 @@
+{% extends 'layout.html' %}
+{% block title %}
+Edit Profile - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="registration-container">
+    <h2>Edit Profile</h2>
+
+    <form method="POST" action="{{ url_for('edit_profile') }}">
+        <!-- User ID Section -->
+        <div class="form-section">
+            <h3>User Information</h3>
+            <div class="form-group">
+                <label for="user_id">User ID: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="user_id" name="user_id" value="{{ user.id }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="{{ user.name }}" required minlength="4" maxlength="20" pattern="[A-Za-z0-9_ ]+" title="Username must be 4-20 characters long, containing only letters, numbers, and underscores.">
+                <small class="form-text text-muted">Your full name as per the government ID.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email: <span style="color: red;">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="{{ user.email }}" required>
+                <small class="form-text text-muted">Please enter a valid email address.</small>
+            </div>
+        </div>
+
+        <!-- Contact Information Section -->
+        {% if role == 'customer' or role == 'service_professional' %}
+        <div class="form-section">
+            <h3>Contact Information</h3>
+            <div class="form-group">
+                <label for="phone">Phone Number: <span style="color: red;">*</span></label>
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" value="{{ user.phone }}" required pattern="^\+?\d{1,3}[- ]?\d{1,4}[- ]?\d{4,10}$" title="Please enter a valid phone number, including country code." maxlength="10" minlength="10">
+                <small class="form-text text-muted">Please enter a valid phone number, excluding country code.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="address" name="address" placeholder="Enter your address" value="{{ user.address }}" required>
+                <small class="form-text text-muted">Provide a complete address including street, city, etc.</small>
+            </div>
+        </div>
+
+        <!-- Location Section -->
+        <div class="form-section">
+            <h3>Location Information</h3>
+            <div class="form-group">
+                <label for="district">District: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="district" name="district" value="{{ user.district }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="state">State: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="state" name="state" value="{{ user.state }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="country" name="country" value="{{ user.country }}" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="pincode">Pincode: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="pincode" name="pincode" value="{{ user.pincode }}" readonly>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if role == 'service_professional' %}
+        <!-- Service Professional Section -->
+        <div class="form-section">
+            <h3>Professional Information</h3>
+            <div class="form-group">
+                <label for="experience">Experience (in years): <span style="color: red;">*</span></label>
+                <input type="number" class="form-control" id="experience" name="experience" placeholder="Enter your experience" value="{{ user.experience }}" required min="0" max="50" title="Experience must be a number between 0 and 50.">
+                <small class="form-text text-muted">Enter your experience in years.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description: <span style="color: red;">*</span></label>
+                <textarea class="form-control" id="description" name="description" required>{{ user.description }}</textarea>
+                <small class="form-text text-muted">Provide a brief description of your services.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="govt_id">Government ID Number: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="govt_id" name="govt_id" value="{{ user.govt_id }}" readonly>
+                <a href="{{ url_for('download_service_professional_govt_id', id=user.id) }}" class="btn btn-primary mt-2">View Uploaded ID</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Registration Date Section -->
+        <div class="form-section">
+            <h3>Registration Information</h3>
+            <div class="form-group">
+                <label for="joined_on">Registered On: <span style="color: red;">*</span></label>
+                <input type="text" class="form-control" id="joined_on" name="joined_on" value="{{ user.date_created.strftime('%Y-%m-%d') }}" readonly>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <a href="{{ url_for('profile') }}" class="btn btn-back">Back to Profile</a>
+            <button type="submit" class="btn btn-custom">Update Profile</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit_profile.css') }}">
+{% endblock %}

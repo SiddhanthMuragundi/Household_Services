@@ -1,0 +1,157 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Service Professional Summary - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Your Summary</h1>
+
+    <section class="booking-statistics">
+        <h2>Booking Statistics:</h2>
+        <div class="stats-container">
+            <p><strong>Total Completed Bookings:</strong> {{ data.total_completed_count }}</p>
+            <p><strong>Total Cancelled Bookings:</strong> {{ data.total_cancelled_count }}</p>
+            <p><strong>Total Earnings:</strong> ₹{{ '%.2f' | format(data.total_earnings) }}</p>
+        </div>
+    </section>
+
+    <section class="charts">
+        <h2>Orders andEarning Analysis:</h2>
+        <div class="charts-container">
+            <div class="chart-item">
+                <h3>Monthly Earnings</h3>
+                <canvas id="monthlyEarningsChart"></canvas>
+            </div>
+
+            <div class="chart-item">
+                <h3>Yearly Earnings</h3>
+                <canvas id="yearlyEarningsChart"></canvas>
+            </div>
+
+            <div class="chart-item">
+                <h3>Yearly Confirmed and Cancelled Orders</h3>
+                <canvas id="yearlyOrdersChart"></canvas>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Monthly Earnings Chart
+    const monthlyEarningsData = {{ data.monthly_earnings | tojson }};
+    const monthlyLabels = Object.keys(monthlyEarningsData);
+    const monthlyValues = Object.values(monthlyEarningsData);
+
+    const monthlyCtx = document.getElementById('monthlyEarningsChart').getContext('2d');
+    const monthlyChart = new Chart(monthlyCtx, {
+        type: 'bar',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: 'Monthly Earnings',
+                data: monthlyValues,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Yearly Earnings Chart
+    const yearlyEarningsData = {{ data.yearly_earnings | tojson }};
+    const yearlyLabels = Object.keys(yearlyEarningsData);
+    const yearlyValues = Object.values(yearlyEarningsData);
+
+    const yearlyCtx = document.getElementById('yearlyEarningsChart').getContext('2d');
+    const yearlyChart = new Chart(yearlyCtx, {
+        type: 'line',
+        data: {
+            labels: yearlyLabels,
+            datasets: [{
+                label: 'Yearly Earnings',
+                data: yearlyValues,
+                fill: false,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Yearly Confirmed and Cancelled Orders Chart
+    const yearlyOrdersData = {{ data.yearly_orders | tojson }};
+    const ordersLabels = Object.keys(yearlyOrdersData);
+    const confirmedValues = ordersLabels.map(year => yearlyOrdersData[year].confirmed);
+    const cancelledValues = ordersLabels.map(year => yearlyOrdersData[year].cancelled);
+
+    const ordersCtx = document.getElementById('yearlyOrdersChart').getContext('2d');
+    const ordersChart = new Chart(ordersCtx, {
+        type: 'bar',
+        data: {
+            labels: ordersLabels,
+            datasets: [
+                {
+                    label: 'Confirmed Orders',
+                    data: confirmedValues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Cancelled Orders',
+                    data: cancelledValues,
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/service_professional_summary.css') }}">
+<style>
+    .details-container, .stats-container, .charts-container {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+    }
+
+    .chart-item {
+        margin-bottom: 30px;
+    }
+
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Admin Dashboard - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <header>
+        <h1>Welcome, {{ user.name }}!</h1>
+        <p>Admin Dashboard - Manage Expert Household Services</p>
+        
+    </header>
+    {%include 'home_content.html' %}
+    
+    
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}

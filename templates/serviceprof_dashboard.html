@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Service Professional Dashboard - Expert Household Services
+{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <header>
+        <h1>Welcome, {{ user.name }}!</h1>
+        <p>Service Professional Dashboard - Manage Your Services</p>
+        {% if flag_count > 3 %}
+        <div class="alert alert-warning">
+            Warning: Your account may be blocked or deleted due to excessive flags on your orders.
+        </div>
+    {% endif %}
+    </header>
+    
+    {%include 'home_content.html' %}
+ 
+</div>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}

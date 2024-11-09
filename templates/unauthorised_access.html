@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block title %}
+Unauthorised Access - Expert Household Services
+{% endblock %}
+
+{% block content %}
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block style %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color:#e9ecef;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+</style>
+
+{%endblock %}
+
+{% block script %}
+
+{% endblock %}
